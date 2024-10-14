@@ -1,7 +1,11 @@
 "use client";
 
 import '../../index.css';
+import Link from 'next/link';
 import AuctionPage from './components/AuctionPage'; // 引入 AuctionPage 组件
+
+import CreateAuction from './create/page';
+import BidAuction from './bid/page';
 
 
 import { useEffect, useState } from 'react';
@@ -110,6 +114,14 @@ export default function Auction() {
             <button onClick={placeBid}>出价</button>
 
             <AuctionPage currentBid={highestBid}/> {/* 使用 AuctionPage 组件 */}
+
+            <Link href={`/auction/bid?id=${highestBid}`}>
+                去竞标页面
+            </Link>
+            <br></br>
+            <Link href="/auction/create">
+                创建拍卖
+            </Link>
         </div>
     );
 }
