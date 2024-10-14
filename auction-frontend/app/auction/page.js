@@ -43,6 +43,16 @@ export default function Auction() {
         }
 
 
+         // 检测是否已连接账户
+         const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+         if (accounts.length > 0) {
+             console.log("Wallet is already connected with account:", accounts[0]);
+         } else {
+             console.log("No wallet connected. Requesting connection...");
+             await connectWallet(); // 请求连接钱包
+         }
+
+
         try {
             // ethers.Web3Provider
             const provider = new ethers.providers.Web3Provider(window.ethereum, {
@@ -63,6 +73,17 @@ export default function Auction() {
         // const provider = new ethers.providers.Web3Provider(window.ethereum);
         // console.log(window.ethereum);
         
+    }
+
+    async function connectWallet() {
+        try {
+            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+            console.log("Wallet connected with account:", accounts[0]);
+            return accounts[0]; // 返回已连接的第一个账户地址
+        } catch (error) {
+            console.error("Error connecting wallet:", error);
+            return null;
+        }
     }
 
     async function placeBid() {
