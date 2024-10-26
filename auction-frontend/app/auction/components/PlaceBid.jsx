@@ -20,7 +20,7 @@ const PlaceBid = () => {
 
     await toast.promise(
       new Promise(async (resolve, reject) => {
-        await bidPrice({ ...auction, price })
+        await bidPrice({ id: auction.token_id.toString(), price })
           .then(() => {
             resolve()
             closeModal()

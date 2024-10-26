@@ -1,9 +1,10 @@
 import { ethers } from 'ethers'
 import { getGlobalState, setGlobalState } from '../cache'
 import AuctionItemAbi from '../../../artifacts/contracts/AuctionManager.json';
+import { concat } from 'ethers/lib/utils';
 
 
-const ContractAddress = '0x46b142dd1e924fab83ecc3c08e4d46e82f005e0e'
+const ContractAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3'
 
 // check if the wallet is connected
 const isWallectConnected = async () => {
@@ -19,11 +20,11 @@ const isWallectConnected = async () => {
     window.ethereum.on('accountsChanged', async () => {
       setGlobalState('connectedAccount', accounts[0]?.toLowerCase())
       await isWallectConnected()
-      await loadCollections()
-      await logOutWithCometChat()
-      await checkAuthState()
-        .then((user) => setGlobalState('currentUser', user))
-        .catch((error) => setGlobalState('currentUser', null))
+      // await loadCollections()
+      // await logOutWithCometChat()
+      // await checkAuthState()
+      //   .then((user) => setGlobalState('currentUser', user))
+      //   .catch((error) => setGlobalState('currentUser', null))
     })
 
     if (accounts.length) {
@@ -40,28 +41,44 @@ const isWallectConnected = async () => {
 
 // get the conctact
 const getEthereumContract = async () => {
-  const connectedAccount = getGlobalState('connectedAccount')
-  if (connectedAccount) {
-    // const provider = new ethers.providers.Web3Provider(ethereum, {
-    //   chainId: 31337, // 以太坊主网
-    //   name: "anvil Sepolia" // 网络名称
-    // })
-    try{
+  // const connectedAccount = getGlobalState('connectedAccount')
+  // if (connectedAccount) {
+  //   // const provider = new ethers.providers.Web3Provider(ethereum, {
+  //   //   chainId: 31337, // 以太坊主网
+  //   //   name: "anvil Sepolia" // 网络名称
+  //   // })
+  //   try{
 
-      const provider = new ethers.providers.JsonRpcProvider("http://127.0.0.1:8545", {
-        chainId: 31337,
-        name: "anvil"
-      });
-      // alert(provider)
-      const signer = provider.getSigner()
-      const contract = new ethers.Contract(ContractAddress, AuctionItemAbi.abi, signer)
+  //     const provider = new ethers.providers.JsonRpcProvider("http://127.0.0.1:8545", {
+  //       chainId: 31337,
+  //       name: "anvil"
+  //     });
+  //     // alert(provider)
+  //     const signer = provider.getSigner()
+  //     const contract = new ethers.Contract(ContractAddress, AuctionItemAbi.abi, signer)
+  //     return contract
+  //   }catch (error) {
+  //     console.error("Error initializing provider or signer:", error);
+  //   }
+  // } else {
+  //   return getGlobalState('contract')
+  // }
 
-      return contract
-    }catch (error) {
-      console.error("Error initializing provider or signer:", error);
-    }
-  } else {
-    return getGlobalState('contract')
+
+  try{
+
+    // const provider = new ethers.providers.JsonRpcProvider("http://127.0.0.1:8545", {
+    //   chainId: 31337,
+    //   name: "anvil"
+    // });
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+
+    // alert(provider)
+    const signer = provider.getSigner()
+    const contract = new ethers.Contract(ContractAddress, AuctionItemAbi.abi, signer)
+    return contract
+  }catch (error) {
+    console.error("Error initializing provider or signer:", error);
   }
 }
 
@@ -88,9 +105,9 @@ const createAuction = async ({
       item_url,
       0,
       // toWei(price),
-      // {
-      //   value: ethers.utils.parseEther(start_price.toString()),
-      // },
+      {
+        value: ethers.utils.parseEther(String(start_price)),
+      },
     )
     // await tx.wait()
     await loadAuctions()
@@ -119,9 +136,47 @@ const loadAuctions = async () => {
   }
 }
 
+// load a specific auction
+const loadAuction = async (id) => {
+  try {
+    if (!ethereum) return alert('Please install Metamask')
+    const contract = await getEthereumContract()
+    // alert(contract.address)
+    // alert(id)
+    const auction = await contract.getCertainAcutions(id)
+    // alert(auction.duration)
+    // alert(auction.max_price)
+    setGlobalState('auction', auction)
+    // alert(auction)
+    // setGlobalState('auction', structuredAuctions([auction])[0])
+  } catch (error) {
+    reportError(error)
+  }
+}
+
+
+// start the auction
+const startAuction = async (id) => {
+  try {
+    if (!ethereum) return alert('Please install Metamask')
+    const contract = await getEthereumContract()
+    // alert(contract.address)
+    // alert(id)
+    await contract.startAuction(id)
+    // alert(auction.duration)
+    // alert(auction.max_price)
+    // setGlobalState('auction', auction)
+    // alert(auction)
+    // setGlobalState('auction', structuredAuctions([auction])[0])
+  } catch (error) {
+    reportError(error)
+  }
+}
+
 
 // collect to the wallet
 const connectWallet = async () => {
+  alert('')
   try {
     if (!ethereum) return alert('Please install Metamask')
     const accounts = await ethereum.request({ method: 'eth_requestAccounts' })
@@ -132,8 +187,19 @@ const connectWallet = async () => {
 }
 
 
-const bidPrice = async ({ tokenId, price }) => {
+const bidPrice = async ({ id, price }) => {
+  try {
+    if (!ethereum) return alert('Please install Metamask')
 
+    const contract = await getEthereumContract()
+
+    await contract.bid(ethers.utils.parseEther(String(price)), id, {
+      value: ethers.utils.parseEther(String(price)),
+    })
+
+  } catch (error) {
+    reportError(error)
+  }
 }
 
 
@@ -143,7 +209,8 @@ export {
   connectWallet,
   createAuction,
   loadAuctions,
-  // loadAuction,
+  loadAuction,
+  startAuction,
   // loadCollections,
   // offerItemOnMarket,
   // buyNFTItem,
