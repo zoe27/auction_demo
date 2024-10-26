@@ -36,7 +36,7 @@ contract AuctionManager{
         string memory _description,
         string memory _url,
         uint256 _delay_time) external {
-            _duration = _duration == 0 ? 2 days : _duration;
+            _duration = _duration == 0 ? 2 : _duration;
             _startingPrice = _startingPrice == 0 ? 100000000 : _startingPrice;
             _name = bytes(_name).length == 0 ? "auction item" : _name;
             _description = bytes(_description).length == 0 ? "nothing" : _description;
@@ -71,10 +71,35 @@ contract AuctionManager{
     }
 
     // 获取某一个具体的拍卖
-    function getCertainAcutions(uint idx) external view returns(AuctionItem) {
-        return auctionMap[idx];
+    function getCertainAcutions(uint idx) external view returns(AuctionItemStruct memory) {
+        AuctionItem auction = auctionMap[idx];
+        AuctionItemStruct memory auctionStruct = AuctionItemStruct({
+                            duration: auction.duration(),
+                            max_price: auction.current_bid(), 
+                            name: auction.name(), 
+                            description: auction.description(), 
+                            url: auction.url(), 
+                            token_id: auction.token_id(), 
+                            expire_at: auction.expire_at(), 
+                            owner: auction.owner() 
+                            });
+        return auctionStruct;
+    }
+
+    // 竞标价格
+    function bid(uint price, uint idx) external payable{
+        require(price > 0, "price can not less than 0");
+        require(price == msg.value, "price value is not same as refund");
+        AuctionItem auction = auctionMap[idx];
+        require(price > auction.current_bid(), "price can or less than current price");
+        auction.bidding{value: price}(msg.sender, price);
+    }
+
+    // 启动拍卖
+    function startAuction(uint idx) external {
+        AuctionItem auction = auctionMap[idx];
+        auction.startAuction(msg.sender);
     }
 
     
-
 }

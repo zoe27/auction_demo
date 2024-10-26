@@ -51,7 +51,7 @@ contract AuctionItem{
         current_bid = _startingPrice;
 
         start_at = block.timestamp;
-        expire_at = start_at + duration;
+        expire_at = start_at + duration * 1 days;
         current_max_bidder = creater;
 
         delay_time = _delay_time;
