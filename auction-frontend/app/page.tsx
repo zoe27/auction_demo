@@ -51,8 +51,6 @@ function App() {
   const [loaded, setLoaded] = useState(false)
   const [auction] = useGlobalState('auction')
 
-  const LoadedContext = createContext(loaded);
-
   useEffect(() => {
     // 定义一个异步函数
     const loadBlockchainData = async () => {
@@ -92,11 +90,8 @@ function App() {
     
     <Home></Home>
     <CreateAuction />
-    <PlaceBid />
+    {/* <PlaceBid /> */}
     <Footer/>
-
-
-
 
 
 
