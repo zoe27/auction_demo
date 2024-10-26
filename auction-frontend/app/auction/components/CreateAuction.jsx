@@ -4,7 +4,7 @@ import { toast } from 'react-toastify'
 import { FaTimes } from 'react-icons/fa'
 import picture6 from '../assets/images/picture6.png'
 import { setGlobalState, useGlobalState } from '../cache'
-import { createNftItem } from '../blockchain/blockchain'
+import { createAuction } from '../blockchain/blockchain'
 
 const CreateAuction = () => {
   const [boxModal] = useGlobalState('boxModal')
@@ -17,12 +17,26 @@ const CreateAuction = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!name || !price || !description || !fileUrl) return
+    if (!name || !price || !description || !imgBase64 || !days){
+      console.log('lack of necessary info')
+      return
+    }
     const formData = new FormData()
     formData.append('name', name)
-    formData.append('price', price)
+    formData.append('start_price', price.toString())
     formData.append('description', description)
-    formData.append('image', fileUrl)
+    formData.append('item_url', imgBase64)
+    formData.append('days', days)
+
+    await createAuction({
+      name: formData.get("name"),
+      description: formData.get("description"),
+      days: formData.get("days"),
+      item_url: formData.get("item_url"),
+      start_price: formData.get("start_price"),
+    }).then(async () => {
+      closeModal()
+    })
   }
 
   const closeModal = () => {
