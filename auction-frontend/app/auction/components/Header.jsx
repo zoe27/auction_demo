@@ -1,6 +1,6 @@
 // import { Link } from 'react-router-dom'
 import { connectWallet } from '../blockchain/blockchain.jsx'
-import { truncate, useGlobalState } from '../cache'
+import { setGlobalState, truncate, useGlobalState } from '../cache'
 import Link from 'next/link';
 
 
@@ -27,7 +27,7 @@ const Header = () => {
         <Link href="/collections" className="mx-4 cursor-pointer">Collection</Link>
         <Link href="/artists" className="mx-4 cursor-pointer">Artists</Link>
         <Link href="/community" className="mx-4 cursor-pointer">Community</Link>
-        <Link href="/create" className="mx-4 cursor-pointer">Community</Link>
+        <Link href="/" className="mx-4 cursor-pointer" onClick={() => setGlobalState('boxModal', 'scale-100')}>Create Auction</Link>
 
       </ul>
 
@@ -49,6 +49,14 @@ const Header = () => {
           Connect Wallet
         </button>
       )}
+
+        {/* <button
+          className="shadow-xl shadow-black text-white
+          bg-green-500 hover:bg-green-700 md:text-xs p-2
+          rounded-full cursor-pointer text-xs sm:text-base"
+          >
+          create auction
+        </button> */}
 
     </nav>
   )

@@ -68,30 +68,10 @@ function App() {
       className="min-h-screen bg-gradient-to-t from-gray-800 bg-repeat
     via-[#25bd9c] to-gray-900 bg-center subpixel-antialiased"
     >
-      {<Header />/* 
-      {loaded ? (
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/collections" element={<Collections />} />
-          <Route path="/nft/:id" element={<Nft />} />
-        </Routes>
-      ) : null}
-      <CreateNFT />
-      {auction ? (
-        <>
-          <PlaceBid />
-          <OfferItem />
-          <ChangePrice />
-        </>
-      ) : null}
-     */}
-
-    
-    
-    <Home></Home>
-    <CreateAuction />
-    {/* <PlaceBid /> */}
-    <Footer/>
+      {<Header />}
+      <Home></Home>
+      <CreateAuction />
+      <Footer/>
 
 
 

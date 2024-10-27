@@ -32,7 +32,7 @@ const Detail = ({ params }) => {
     // 定义一个异步函数
     const loadAuctionData = async () => {
         await loadAuction(id)
-        await startAuction(id)
+        // await startAuction(id)
     };
   
     // 调用异步函数
@@ -138,6 +138,11 @@ const ActionButton = ({ auction, account }) => {
     setGlobalState('bidBox', 'scale-100')
   }
 
+  const startAuc = async () => {
+    await startAuction(String(auction.token_id))
+    await loadAuction(String(auction.token_id))
+  }
+
   const handleNFTpurchase = async () => {
     await toast.promise(
       new Promise(async (resolve, reject) => {
@@ -156,8 +161,15 @@ const ActionButton = ({ auction, account }) => {
   return (
     <div className="flex justify-start items-center space-x-2 mt-2">
 
-      {/* {auction?.expire_at > Date.now() ? ( */}
-      {1730764800000 > Date.now() ? (
+      { auction?.status == 0 ? (<button
+          type="button"
+          className="shadow-sm shadow-black text-white
+          bg-gray-500 hover:bg-gray-700 md:text-xs p-2.5
+          rounded-sm cursor-pointer font-light"
+          onClick={startAuc}
+        >
+          Start auction
+        </button> ): auction?.expire_at * 1000 > Date.now() ? (
         <button
           type="button"
           className="shadow-sm shadow-black text-white
@@ -167,7 +179,7 @@ const ActionButton = ({ auction, account }) => {
         >
           Place a Bid
         </button>
-      ) : null}
+      ) : null }
     </div>
   )
 }

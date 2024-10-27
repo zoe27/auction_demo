@@ -4,7 +4,7 @@ import AuctionItemAbi from '../../../artifacts/contracts/AuctionManager.json';
 import { concat } from 'ethers/lib/utils';
 
 
-const ContractAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3'
+const ContractAddress = '0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9'
 
 // check if the wallet is connected
 const isWallectConnected = async () => {
@@ -67,11 +67,11 @@ const getEthereumContract = async () => {
 
   try{
 
-    // const provider = new ethers.providers.JsonRpcProvider("http://127.0.0.1:8545", {
-    //   chainId: 31337,
-    //   name: "anvil"
-    // });
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const provider = new ethers.providers.JsonRpcProvider("http://127.0.0.1:8545", {
+      chainId: 31337,
+      name: "anvil"
+    });
+    // const provider = new ethers.providers.Web3Provider(window.ethereum);
 
     // alert(provider)
     const signer = provider.getSigner()

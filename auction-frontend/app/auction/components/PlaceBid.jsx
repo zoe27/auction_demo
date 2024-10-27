@@ -61,7 +61,7 @@ const PlaceBid = () => {
               <img
                 alt="NFT"
                 className="h-full w-full object-cover cursor-pointer"
-                src={auction?.image}
+                src={auction?.url}
               />
             </div>
           </div>
