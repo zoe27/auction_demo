@@ -45,7 +45,7 @@ contract AuctionItem{
         uint256 _token_id,
         uint256 _delay_time,
         address payable creater
-        ){
+        ) payable {
         
         duration = _duration;
         current_bid = _startingPrice;

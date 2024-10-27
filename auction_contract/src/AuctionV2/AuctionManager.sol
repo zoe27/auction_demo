@@ -25,6 +25,8 @@ contract AuctionManager{
         uint256 expire_at;
         address owner;
         uint token_id;
+        uint status;
+
     }
 
 
@@ -35,7 +37,7 @@ contract AuctionManager{
         string memory _name,
         string memory _description,
         string memory _url,
-        uint256 _delay_time) external {
+        uint256 _delay_time) external payable{
             _duration = _duration == 0 ? 2 : _duration;
             _startingPrice = _startingPrice == 0 ? 100000000 : _startingPrice;
             _name = bytes(_name).length == 0 ? "auction item" : _name;
@@ -44,7 +46,7 @@ contract AuctionManager{
             _delay_time = _delay_time == 0 ? 5 minutes : _delay_time;
 
             uint idx = auctionitems.length + 1;
-            AuctionItem auctionitem = new AuctionItem(_duration, _startingPrice, _name, _description, _url, idx, _delay_time, payable(msg.sender));
+            AuctionItem auctionitem = new AuctionItem{value: _startingPrice}(_duration, _startingPrice, _name, _description, _url, idx, _delay_time, payable(msg.sender));
 
             auctionMap[idx] = auctionitem;
             auctionitems.push(auctionitem);
@@ -64,7 +66,8 @@ contract AuctionManager{
                             url: auction.url(), 
                             token_id: auction.token_id(), 
                             expire_at: auction.expire_at(), 
-                            owner: auction.owner() 
+                            owner: auction.owner(),
+                            status: uint(auction.auctionState())
                             });
         }
         return details;
@@ -81,7 +84,8 @@ contract AuctionManager{
                             url: auction.url(), 
                             token_id: auction.token_id(), 
                             expire_at: auction.expire_at(), 
-                            owner: auction.owner() 
+                            owner: auction.owner(),
+                            status: uint(auction.auctionState())
                             });
         return auctionStruct;
     }
