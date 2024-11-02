@@ -35,6 +35,7 @@ contract AuctionItem{
 
     event Bidding_msg(address addr, uint price);
     event AuctionEnded(address indexed winner, uint winningBid);
+    event AuctionWithDraw(address indexed addr, uint number);
 
     constructor( 
         uint256 _duration,
@@ -71,6 +72,7 @@ contract AuctionItem{
         require(auctionState == AuctionState.NotStarted, "Auction has already started or ended.");
         auctionState = AuctionState.Active;
         start_at = block.timestamp; // 有了竞价状态，感觉这个都有点多余了
+        expire_at = start_at + duration * 1 days;
     }
 
     // 发送竞价价格
@@ -119,6 +121,7 @@ contract AuctionItem{
     
         (bool success, ) = payable(drawer).call{value: amount}("");
         require(success, "Withdrawal failed");
+        emit AuctionWithDraw(drawer, amount);
     }
 
     // 获取当前的最高价

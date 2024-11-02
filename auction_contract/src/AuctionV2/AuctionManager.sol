@@ -105,5 +105,18 @@ contract AuctionManager{
         auction.startAuction(msg.sender);
     }
 
+    // 结束拍卖
+    function endAuction(uint idx) external {
+        AuctionItem auction = auctionMap[idx];
+        auction.endAuction(msg.sender);
+    }
+
+    // 提款/退款
+    function withDraw(uint idx) external {
+        AuctionItem auction = auctionMap[idx];
+        auction.withdraw(msg.sender);
+    }
+
+
     
 }
