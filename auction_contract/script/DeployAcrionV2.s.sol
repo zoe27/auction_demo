@@ -17,7 +17,7 @@ contract AuctionV2Script is Script {
 
         auctionManager = new AuctionManager();
 
-        auctionItem = new AuctionItem(10000,1000,"test","test","test",1,10000, payable(address(auctionManager)));
+        auctionItem = new AuctionItem{value: 1000}(10000,1000,"test","test","test",1,10000, payable(address(auctionManager)));
 
         
 
